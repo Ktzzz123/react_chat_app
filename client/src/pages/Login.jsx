@@ -26,11 +26,12 @@ function Login() {
             <input type="password" placeholder="Password" name = "password"
             onChange={(e)=>handleChange(e)}/>
           <button type='submit'> LOGIN</button>
-          <span>Forgot password?
-            <button onClick={()=>window.location.href='/login'} >Forgot password</button>
+        
+            <span>Forgot password?
+            <Link to={'/register'}> Forgot password</Link>
             </span>
             <span>Don't have account?
-            <button onClick={<Link to={'/register'}></Link>} >register</button>
+            <Link to={'/register'}> register</Link>
             </span>
         </form>
       </FormContainer>
