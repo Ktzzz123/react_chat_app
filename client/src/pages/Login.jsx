@@ -1,18 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from "styled-components";
 import {ToastContainer,toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Logo from "../assets/favicon.ico"
 import {Link} from "react-router-dom"
+import axios from 'axios';
+import { loginRoute } from '../utils/APIRoutes';
 
 
 function Login() {
-  const handleSubmit=()=>{
+  const [values, setValues] = useState({
+    username:'',
+    password:'',
+  });
 
-  }
-  const handleChange=()=>{
+
+  const handleSubmit= async(e)=>{
+    e.preventDefault();
+    handleValidation();
+    if(handleValidation()){
+      const {username,password} = values;
+      const {data}=await axios.post(loginRoute,{
+        username,password
+      })
+    }
     
   }
+  const handleChange=(e)=>{
+    setValues({...values,[e.target.name]:e.target.value})
+  }
+
+  const handleValidation = ()=>{
+    const {password,username} = values;
+     if(username.length<8){
+      toast.error("Username must have more or equal than 8 characters ");
+      return false;
+    } else if(password.length<8){
+      toast.error("Password must have more or equal than 8 characters ");
+      return false;
+    }
+    return true;
+  }
+
   return (
     <>
     <FormContainer>
