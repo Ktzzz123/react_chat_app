@@ -1,4 +1,6 @@
 body {
+  top: 0;
+  bottom: 0;
   margin: 0;
   max-height: 100vh;
   max-width: 100vh;

@@ -1,15 +1,74 @@
-import React from 'react'
+import React,{useState,useCallback} from 'react'
 import styled from "styled-components";
 import Logo from "../assets/favicon.ico"
-
+import {ToastContainer,toast} from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import axios from 'axios'
+import {useNavigate} from "react-router-dom"
+import { registerRoute } from '../utils/APIRoutes';
 
 function Register() {
-  const handleSubmit=(e)=>{
+  const navigate = useNavigate();
+
+  const [values, setValues] = useState({
+    username:'',
+    email:'',
+    password:'',
+    confirmPassword:''
+  });
+
+
+
+  const handleSubmit=async(e)=>{
       e.preventDefault();
-      alert("submitted")
+      handleValidation()
+      if(handleValidation()){
+        const {password,username,email} = values;
+        const {data}= await axios.post(registerRoute,{
+          username,email,password
+        });
+        
+        if(data.status === false){
+          toast.error(data.msg,toastOption);
+        }
+        if(data.status === true){
+          localStorage.setItem('chat-app-user',JSON.stringify(data.user))
+        }
+        navigate("/");
+      }
   }
   const handleChange=(e)=>{
+    setValues({...values,[e.target.name]:e.target.value})
 
+  }
+
+
+  const toastOption={
+    position:"top-center",
+    autoClose:"1000",
+    pauseOnHover:true,
+    draggable:true,
+    theme:'light'
+  }
+
+
+  const handleValidation = ()=>{
+    const {password, confirmPassword,username,email} = values;
+    if(password.length<8){
+      toast.error("Password must have more or equal than 8 characters ",toastOption);
+      return false;
+    } else if (password!==confirmPassword){
+      toast.error("password and confirm must be the same",toastOption);
+      return false;
+    }else if(username.length<8){
+      toast.error("Username must have more or equal than 8 characters ",toastOption);
+      return false;
+    }
+   else if(!email){
+      toast.error("please fill your email",toastOption);
+      return false;
+    }
+    return true;
   }
 
 
@@ -19,7 +78,7 @@ function Register() {
         <form onSubmit={(e)=>handleSubmit(e)}>
           <div className='brand'>
             <img src={Logo} alt='brand'/>
-            <h1>ChatApp</h1>
+            <h1>Chat App</h1>
           </div>
           <input type="text" placeholder="Username" name = "username"
             onChange={(e)=>handleChange(e)}/>
@@ -30,11 +89,12 @@ function Register() {
             <input type="password" placeholder="Confirm password" name = "confirmPassword"
             onChange={(e)=>handleChange(e)}/>
           <button type='submit'> Create User</button>
-          <span>Already have an account? 
+          <span>Already have an account?
             <button onClick={()=>window.location.href='/login'} >Login</button>
             </span>
         </form>
       </FormContainer>
+      <ToastContainer/> 
 
     </>
   )
@@ -50,7 +110,7 @@ const FormContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #fff;
+  background-color: white;
   .brand {
     display: flex;
     align-items: center;
@@ -59,7 +119,58 @@ const FormContainer = styled.div`
     img {
       height: 5rem;
     }
-`
+    h1 {
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #4A6658;
+    border-radius: 2rem;
+    padding: 3rem 5rem;
+  }
+  input {
+    background-color: transparent;
+    padding: 1rem;
+    border: 0.1rem solid white;
+    border-radius: 0.4rem;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+    &:focus {
+      border: 0.1rem solid blue;
+      outline: none;
+    }
+  }
+  button {
+    color: black;
+    padding: 1rem 2rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    &:hover {
+      background-color: #239F61;
+    }
+    &:placeholder {
+      color: red;
+      opacity: 1;
+    }
+  }
+  span {
+    color: black;
+    a {
+      color: #4e0eff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  }
+`;
 
 
 export default Register
