@@ -1,6 +1,6 @@
 import React,{useState,useCallback} from 'react'
 import styled from "styled-components";
-import Logo from "../assets/favicon.ico"
+import Logo from "../assets/favicon.ico"    
 import {ToastContainer,toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import axios from 'axios'
