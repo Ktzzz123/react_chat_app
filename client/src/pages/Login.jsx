@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {ToastContainer,toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Logo from "../assets/favicon.ico"
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import axios from 'axios';
 import { loginRoute } from '../utils/APIRoutes';
 
@@ -13,9 +13,10 @@ function Login() {
     username:'',
     password:'',
   });
-
+  const navigate = useNavigate();
 
   const handleSubmit= async(e)=>{
+
     e.preventDefault();
     handleValidation();
     if(handleValidation()){
@@ -23,6 +24,13 @@ function Login() {
       const {data}=await axios.post(loginRoute,{
         username,password
       })
+      if (data.status===false){
+        toast.error(data.msg)
+      }
+      if(data.status === true){
+        localStorage.setItem('chat-app-user',JSON.stringify(data.usernameCheck))
+        navigate("/");
+      }
     }
     
   }
